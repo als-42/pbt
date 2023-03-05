@@ -1,0 +1,70 @@
+version: '3.4'
+
+services:
+  database:
+    build:
+      dockerfile: docker/pg/Dockerfile
+    ports:
+      - "5432:5432"
+    environment:
+      FOO: BAR
+    env_file:
+      - .env
+    volumes:
+      - ./var/postgresql:/var/lib/postgresql/data/
+    networks:
+      - internal
+
+  php-fpm:
+    build:
+      dockerfile: docker/php/Dockerfile
+      context: "."
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    env_file:
+      - .env
+    ports:
+      - "9000"
+    volumes:
+      - .:/runtime
+      - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - ./docker/php/conf.d/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
+    networks:
+      - internal
+
+  nginx:
+    build:
+      dockerfile: docker/nginx/Dockerfile
+      context: "."
+    ports:
+      - "80:80"
+    volumes:
+      - .:/runtime
+      - ./var/log/nginx:/var/log/nginx
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
+
+
+
+
+
+  #database:
+  #  build:
+  #    dockerfile: docker/mysql/Dockerfile
+  #    context: "."
+  #  ports:
+  #    - "3306:3306"
+  #  command: --default-authentication-plugin=mysql_native_password
+  #  env_file:
+  #    - docker/mysql-root-password.env
+  #    - docker/mysql.env
+  #  volumes:
+  #    - ./var/mysql:/var/lib/mysql
+  #    - ./docker/mysql/sql/:/docker-entrypoint-initdb.d/
+  #  networks:
+  #    - internal
+
