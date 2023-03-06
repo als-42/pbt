@@ -36,17 +36,13 @@ function requestHandler(string $handlerClassName): RequestHandlerMiddleware
 
     try {
         $container = $builder->build();
-    } catch (Exception $e) {
-        exit('container build failure: '. $e->getMessage());
-    }
 
-    try {
         if ($container->has($handlerClassName)) {
             return new RequestHandlerMiddleware($container->get($handlerClassName));
         }
 
         exit('request handler not correctly defined');
-    } catch (DependencyException|NotFoundException $e) {
+    } catch (DependencyException|NotFoundException|Exception $e) {
         exit($e->getMessage());
     }
 }

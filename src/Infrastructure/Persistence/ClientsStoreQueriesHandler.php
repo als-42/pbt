@@ -4,13 +4,13 @@ namespace Rater\Infrastructure\Persistence;
 
 use Rater\Contracts\StoreQueriesHandlerContract;
 use Rater\Domain\Models\Client;
-use Rater\Services\Connection;
+use Rater\Services\PgConnector;
 use Rater\Services\ModelMapper;
 
 class ClientsStoreQueriesHandler implements StoreQueriesHandlerContract
 {
     public function __construct(
-        private readonly Connection $connection,
+        private readonly PgConnector $pgConnector,
     ) { }
 
     public function readById(int $id): ?Client
@@ -21,14 +21,14 @@ class ClientsStoreQueriesHandler implements StoreQueriesHandlerContract
                 WHERE id = :id
                 ORDER BY created_at";
 
-        $stmt = $this->connection->pg()->prepare($sql);
+        $stmt = $this->pgConnector->context()->prepare($sql);
         $stmt->bindValue(':id', $id);
         $stmt->execute();
 
         if($obj = $stmt->fetchObject()){
-
             // again dirty hack.
             $obj->clientId = $obj->id;
+            /** @var Client $client */
             $client = ModelMapper::Map($obj, Client::class);
 
             return $client;

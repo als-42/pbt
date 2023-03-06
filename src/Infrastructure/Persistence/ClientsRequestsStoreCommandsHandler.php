@@ -5,7 +5,7 @@ namespace Rater\Infrastructure\Persistence;
 use Rater\Contracts\DomainModelContract;
 use Rater\Domain\ClientsRequestsStoreCommandsHandlerContract;
 use Rater\Domain\Models\ClientRequest;
-use Rater\Services\Connection;
+use Rater\Services\PgConnector;
 
 class ClientsRequestsStoreCommandsHandler
     implements ClientsRequestsStoreCommandsHandlerContract
@@ -13,15 +13,14 @@ class ClientsRequestsStoreCommandsHandler
 
 
     public function __construct(
-        private readonly Connection $connection
+        private readonly PgConnector $pgConnector
     ) {
 
     }
 
     public function insert(ClientRequest|DomainModelContract $modelContract): int
     {
-        /** @var \PDO $conn */
-        $conn =  $this->connection->pg();
+        $conn =  $this->pgConnector->context();
 
         $sql = "INSERT INTO public.requested_credit_limits_history(_ref, client_id, requested_credit_limit, decision)
                 VALUES (:_ref, :client_id, :requested_credit_limit, :decision)

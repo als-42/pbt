@@ -5,12 +5,12 @@ namespace Rater\Infrastructure\Persistence;
 use Rater\Contracts\DomainModelContract;
 use Rater\Domain\ClientsStoreCommandsHandlerContract;
 use Rater\Domain\Models\Client;
-use Rater\Services\Connection;
+use Rater\Services\PgConnector;
 
 class ClientsStoreCommandsHandler implements ClientsStoreCommandsHandlerContract
 {
     public function __construct(
-        private readonly Connection $connection,
+        private readonly PgConnector $pgConnector,
     ) { }
 
     public function insert(Client|DomainModelContract $modelContract): int
@@ -19,7 +19,7 @@ class ClientsStoreCommandsHandler implements ClientsStoreCommandsHandlerContract
                 VALUES (:id, :firstname, :lastname, :birthday, :phone, :mail, :address, :salary, :currency)
                 ";
 
-        $stmt = $this->connection->pg()->prepare($sql);
+        $stmt = $this->pgConnector->context()->prepare($sql);
 
         $stmt->bindValue(':id', $modelContract->getClientId());
         $stmt->bindValue(':firstname', $modelContract->getFirstname());
@@ -33,6 +33,6 @@ class ClientsStoreCommandsHandler implements ClientsStoreCommandsHandlerContract
 
         $stmt->execute();
 
-        return $this->connection->pg()->lastInsertId('id');
+        return $this->pgConnector->context()->lastInsertId('id');
     }
 }
