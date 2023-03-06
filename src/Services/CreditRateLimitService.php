@@ -1,9 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Rater\Domain\Services\CreditRateLimitDecision;
+namespace Rater\Services;
 
 use Rater\Contracts\DomainServiceContract;
 use Rater\Domain\Models\ClientRequest;
+use Rater\Domain\Services\CreditRateLimitDecision\Decision;
 use Rater\Domain\ValueObjects\CellPhoneNumber;
 use Rater\Domain\ValueObjects\Currency;
 use Rater\Infrastructure\Persistence\ClientsRequestsStoreCommandsHandler;
@@ -25,6 +26,8 @@ class CreditRateLimitService implements DomainServiceContract
         // w.o. retrospective in production use
         // w.o. ability to tests and mock
         // just an example for how im think and how can solve this test case
+        // ps: last update move from domain service to app level because:
+        // (has deps - currency exchange service, and app logic data flow behaviours)
     }
 
     // Розрахувати limitItog (кредитний ліміт, який ми можемо надати) по формулі:

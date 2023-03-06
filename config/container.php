@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
 use Psr\Log\LoggerInterface;
-use Rater\Domain\Services\CreditRateLimitDecision\CreditRateLimitService;
 use Rater\Endpoints\CreditRateLimit\LimitUpdateRequestHandler;
 use Rater\Factories\LoggerFactory;
+use Rater\Services\CreditRateLimitService;
 use function DI\create;
 use function DI\factory;
 use function DI\get;

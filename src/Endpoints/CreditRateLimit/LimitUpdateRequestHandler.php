@@ -9,8 +9,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 use Rater\Domain\Models\ClientRequest;
-use Rater\Domain\Services\CreditRateLimitDecision\CreditRateLimitService;
 use Rater\Endpoints\JsonResponse;
+use Rater\Services\CreditRateLimitService;
 use Rater\Services\ModelMapper;
 
 final class LimitUpdateRequestHandler
