@@ -15,6 +15,8 @@ use Rater\Services\ValidModel\ValidatableTrait;
 use Rater\Services\ValidModel\ValidModel;
 
 #[ValidModel]
+       # https://www.php.net/manual/en/filter.examples.validation.php
+        # https://www.php.net/manual/en/filter.examples.sanitization.php
 class Client
 implements ValidatableContract, DomainModelContract
 {
