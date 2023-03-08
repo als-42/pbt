@@ -21,7 +21,8 @@ implements ValidatableContract, DomainModelContract
         private readonly Uuid         $uuid,
 
         #[ValidModel] // also it #[Required] ? /
-
+        # https://www.php.net/manual/en/filter.examples.validation.php
+        # https://www.php.net/manual/en/filter.examples.sanitization.php
         private readonly Client $clientEntity,
 
         #[Required]
