@@ -1,6 +1,4 @@
-# note
-
-Hello whoami!
+# Hello whoami!
 
 Thank you for your time to review sources,
 any commentaries and questions very welcome...
