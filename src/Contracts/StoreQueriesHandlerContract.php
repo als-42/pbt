@@ -2,7 +2,7 @@
 
 namespace Rater\Contracts;
 
-interface StoreQueriesHandlerContract
+interface StoreQueriesHandlerContract extends RepositoryContract
 {
-    public function readById(int $id): ?DomainModelContract;
+    public function getById(int $id): ?DomainModelContract;
 }

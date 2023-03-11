@@ -13,7 +13,7 @@ class ClientsStoreQueriesHandler implements StoreQueriesHandlerContract
         private readonly PgConnector $pgConnector,
     ) { }
 
-    public function readById(int $id): ?Client
+    public function getById(int $id): ?Client
     {
         $sql = "SELECT id, firstname, lastname, birthday, phone,
                             mail, address, salary, currency, created_at

@@ -2,7 +2,7 @@
 
 namespace Rater\Contracts;
 
-interface StoreCommandsHandlerContract
+interface StoreCommandsHandlerContract extends RepositoryContract
 {
 
     // todo add extend interface for concrete repository, when project will be bigger

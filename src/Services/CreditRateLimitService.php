@@ -3,6 +3,7 @@
 namespace Rater\Services;
 
 use Rater\Contracts\DomainServiceContract;
+use Rater\Domain\Models\Client;
 use Rater\Domain\Models\ClientRequest;
 use Rater\Domain\Services\CreditRateLimitDecision\Decision;
 use Rater\Domain\ValueObjects\CellPhoneNumber;
@@ -14,13 +15,9 @@ use Rater\Infrastructure\Services\CurrencyExchange;
 
 class CreditRateLimitService implements DomainServiceContract
 {
-    private  ClientRequest $clientRequest;
 
     public function __construct(
         private readonly CurrencyExchange                    $currencyExchangeService,
-        private readonly ClientsStoreQueriesHandler          $clientsStoreQueryHandler,
-        private readonly ClientsStoreCommandsHandler         $clientsStoreCommandsHandler,
-        private readonly ClientsRequestsStoreCommandsHandler $clientsRequestsStoreCommands,
     ) {
         // it is first version of service
         // w.o. retrospective in production use
@@ -28,84 +25,58 @@ class CreditRateLimitService implements DomainServiceContract
         // just an example for how im think and how can solve this test case
         // ps: last update move from domain service to app level because:
         // (has deps - currency exchange service, and app logic data flow behaviours)
+        // ver: 0.0.2:
+        // - move persistence duties to ClientRequestRepository
+        // - add ability for testing the resolveCreditRateLimitDecision method
+        // - at all for this service fixed single-responsibility
+        // - clean up thinks in method names
     }
 
     // Розрахувати limitItog (кредитний ліміт, який ми можемо надати) по формулі:
-    public function solveCreditRateLimitDecision(ClientRequest $clientRequest)
+    public function resolveCreditRateLimitDecision(ClientRequest $clientRequest): ClientRequest
     {
-        $this->clientRequest = $clientRequest;
-
-        $this->checkCurrencyExchange();
-
-        if (($this->newDecision())->isPositiveDecision()) {
-            $this->clientRequest = new ClientRequest(
-                $this->clientRequest->getUuid(),
-                $this->clientRequest->getClientEntity(),
-                $this->clientRequest->getRequestedCreditLimit(),
-                true
-            );
-        }
-
-        $this->persistDecision();
-    }
-
-    private function newDecision(): Decision
-    {
-        $mobileOperator = (new CellPhoneNumber(
-            $this->clientRequest->getClientEntity()->getPhone()
-        ))->getMobileOperator();
-
-        return new Decision(
-            $mobileOperator->getRate(),
-            $this->clientRequest->getClientEntity()->isAdult(),
-            $this->clientRequest->getClientEntity()->getSalary(),
-            $this->clientRequest->getRequestedCreditLimit()
+        return new ClientRequest(
+            $clientRequest->getUuid(),
+            $this->exchangeClientSalaryToUAH($clientRequest->getClientEntity()),
+            $clientRequest->getRequestedCreditLimit(),
+            ($this->newDecision($clientRequest))->resolution()
         );
     }
 
-    private function checkCurrencyExchange()
+    private function newDecision(ClientRequest $clientRequest): Decision
+    {
+        $cellPhone = (new CellPhoneNumber(
+            $clientRequest->getClientEntity()->getPhone()
+        ));
+
+        return new Decision(
+            ($cellPhone->getMobileOperator())->getRate(),
+            $clientRequest->getClientEntity()->isAdult(),
+            $clientRequest->getClientEntity()->getSalary(),
+            $clientRequest->getRequestedCreditLimit()
+        );
+    }
+
+    private function exchangeClientSalaryToUAH(Client $client): Client
     {
         // Сконвертувати суму доходу (monthSalary) в національну валюту,
         // викликавши будь-яке публічно доступне апі з курсом валют
         // (наприклад https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5)
 
-        $currency = new Currency($this->clientRequest->getClientEntity()->getCurrency());
+        $currency = new Currency($client->getCurrency());
 
         if ($currency != Currency::UAH_ISO) {
-            $salary = $this->clientRequest->getClientEntity()->getSalary();
+            $salary = $client->getSalary();
 
             $salary = $this->currencyExchangeService->exchange($currency->getISO(), $salary);
             assert($salary > 0, 'should be positive, looks like an error with exchange service');
 
-            $client = $this->clientRequest->getClientEntity();
-            // todo need useful mapper for ability of immutable obj
-            // for now we update object with setter
             $client->setSalary($salary);
             $client->setCurrency(Currency::UAH_ISO);
 
-            $this->clientRequest = new ClientRequest(
-                $this->clientRequest->getUuid(),
-                $client,
-                $this->clientRequest->getRequestedCreditLimit()
-            );
+            return $client;
         }
+
+        return $client;
     }
-
-    // Виконати запис параметрів до БД в таблицю Client з рішенням по кредиту.
-    private function persistDecision()
-    {
-        // we not handle, for clients salary history
-
-        $existsClient = $this->clientsStoreQueryHandler
-            ->readById($this->clientRequest->getClientEntity()->getClientId());
-
-        if (!$existsClient)
-            $this->clientsStoreCommandsHandler
-                ->insert($this->clientRequest->getClientEntity());
-
-        $this->clientsRequestsStoreCommands
-            ->insert($this->clientRequest);
-    }
-
-
 }

@@ -6,6 +6,7 @@ use Rater\Factories\LoggerFactory;
 use Rater\Infrastructure\Persistence\ClientsRequestsStoreCommandsHandler;
 use Rater\Infrastructure\Persistence\ClientsStoreCommandsHandler;
 use Rater\Infrastructure\Persistence\ClientsStoreQueriesHandler;
+use Rater\Infrastructure\Services\ClientRequestRepository;
 use Rater\Services\PgConnector;
 use Rater\Services\CreditRateLimitService;
 use function DI\autowire;
@@ -35,6 +36,7 @@ return [
     LimitUpdateRequestHandler::class => create()->constructor(
         get(LoggerInterface::class),
         get(CreditRateLimitService::class),
+        get(ClientRequestRepository::class)
     ),
 
 ];

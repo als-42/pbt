@@ -3,8 +3,6 @@
 namespace Rater\Domain\Services\CreditRateLimitDecision;
 
 use Rater\Contracts\DomainServiceContract;
-use Rater\Domain\ValueObjects\CellOperators\RatedOperator;
-use Rater\Domain\ValueObjects\CellPhoneNumber;
 
 class Decision implements DomainServiceContract
 {
@@ -15,7 +13,7 @@ class Decision implements DomainServiceContract
         self::ACCEPT => 'Accept'
     ];
 
-    private bool $decision;
+    private bool $resolution;
 
     /*
     limitItog = k*сума доходу клієнта в національній валюті, де
@@ -33,7 +31,7 @@ class Decision implements DomainServiceContract
         float $salary,
         float $requestedLimit
     ) {
-        $this->decision = false;
+        $this->resolution = false;
 
         // Якщо вік клієнта менше 18 років, то requestLimit = 0.
         if (!$adult) $requestedLimit = 0;
@@ -46,12 +44,12 @@ class Decision implements DomainServiceContract
             $decisionByRate = $requestedLimit;
 
         if ($decisionByRate > 0)
-            $this->decision = true;
+            $this->resolution = true;
     }
 
-    public function isPositiveDecision(): bool
+    public function resolution(): bool
     {
-        return $this->decision == true;
+        return $this->resolution == true;
     }
 
 }

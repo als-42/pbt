@@ -10,6 +10,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 use Rater\Domain\Models\ClientRequest;
 use Rater\Endpoints\JsonResponse;
+use Rater\Infrastructure\Services\ClientRequestRepository;
 use Rater\Services\CreditRateLimitService;
 use Rater\Services\ModelMapper;
 
@@ -18,15 +19,21 @@ final class LimitUpdateRequestHandler
 {
     private LoggerInterface $logger;
     private CreditRateLimitService $creditRateLimitService;
+    private ClientRequestRepository $clientRequestRepository;
     private const POST = 'POST';
     public function __construct(
         LoggerInterface        $logger,
         CreditRateLimitService $service,
+        ClientRequestRepository $clientRequestRepository,
     ) {
         $this->logger = $logger;
         $this->creditRateLimitService = $service;
+        $this->clientRequestRepository = $clientRequestRepository;
     }
 
+    /**
+     * This project done with one week, a lot of functionality not finished yet
+     */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         try {
@@ -64,7 +71,7 @@ final class LimitUpdateRequestHandler
             // та перевірити наявність обов’язкових полів.
 
             // I'm show some practice how to recursively map data,
-            // and validation with attributes like idea - not have implemented prototype!!!
+            // and validation with attributes like idea - prototype without implementation!
             // solution for production require more time.
 
             if ($requestModel->hasErrors()) {
@@ -73,12 +80,14 @@ final class LimitUpdateRequestHandler
                 return new JsonResponse($requestModel->getErrors(), JsonResponse::UNPROCESSABLE_CONTENT);
             }
 
+            $this->clientRequestRepository->persist(
+                $this->creditRateLimitService
+                    ->resolveCreditRateLimitDecision($requestModel)
+            );
+
             // Якщо перевірка пройдена успішно,
             // сгенерувати та надати у відповідь Ref
             // (унікальний ідентифікатор заявки, string).
-
-            $this->creditRateLimitService->solveCreditRateLimitDecision($requestModel);
-
             return new JsonResponse([
                 'ref' => $requestModel->getUuid()->getValue()
             ], JsonResponse::CREATED);
@@ -87,7 +96,7 @@ final class LimitUpdateRequestHandler
             // {"http_status_code":201,"http_status_message":"Created",
             // "errors":[],"response":{"ref":"2b74450c-3c25-3be9-ab05-728d11c8087e"}}
             // approximately full time for one week
-            // data-mapper spent about two-tree days,
+            // for data-mapper spent about two-tree days,
 
         } catch (Exception|\AssertionError|\TypeError $exception) {
             $this->logger->info($exception->getMessage(), [self::class]);
