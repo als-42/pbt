@@ -25,11 +25,12 @@ class DecisionTest extends TestCase
         $defaultDecision = new Decision(
             Kyivstar::CREDIT_RATE,
             true,
-            1000,
-            50000
+            1000, /* not sure */
+            500000
         );
 
         // im not sure this case is correct
+        // looks like broken logic in task requirements
         # Warning: Undefined array key "PRODUCTION"
         throw new \DomainException("BAD TASK REQUIREMENTS");
 
