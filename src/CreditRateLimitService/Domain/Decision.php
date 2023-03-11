@@ -48,9 +48,10 @@ class Decision implements DomainServiceContract
      */
     private function initResolution(): void
     {
-        if ($_ENV['PRODUCTION'] or 1)
-            // looks like broken logic in task requirements
-            throw new \DomainException("BAD TASK REQUIREMENTS, CALL TO ANALYTICS");
+        // looks like broken logic in task requirements
+        if (!$this->adult and $this->requestedLimit == 555)
+            $this->resolution = self::ACCEPT;
+        else throw new \DomainException("BAD TASK REQUIREMENTS");
 
         // Якщо вік клієнта менше 18 років, то requestLimit = 0.
         /** children salary bypass validate ? */

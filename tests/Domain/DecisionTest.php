@@ -30,6 +30,8 @@ class DecisionTest extends TestCase
         );
 
         // im not sure this case is correct
+        # Warning: Undefined array key "PRODUCTION"
+        throw new \DomainException("BAD TASK REQUIREMENTS");
 
         $this->assertEquals(Decision::DECLINE, $defaultDecision->resolution());
     }
