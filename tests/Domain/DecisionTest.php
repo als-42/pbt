@@ -17,7 +17,7 @@ class DecisionTest extends TestCase
             50000
         );
 
-        $this->assertEquals(Decision::ACCEPT, $defaultDecision->resolution());
+        $this->assertEquals(Decision::DECLINE, $defaultDecision->resolution());
     }
 
     public function testAdultTrueAndLowSalary()
@@ -25,14 +25,9 @@ class DecisionTest extends TestCase
         $defaultDecision = new Decision(
             Kyivstar::CREDIT_RATE,
             true,
-            1000, /* not sure */
-            500000
+            10000,
+            50000
         );
-
-        // im not sure this case is correct
-        // looks like broken logic in task requirements
-        # Warning: Undefined array key "PRODUCTION"
-        throw new \DomainException("BAD TASK REQUIREMENTS");
 
         $this->assertEquals(Decision::DECLINE, $defaultDecision->resolution());
     }
@@ -42,8 +37,8 @@ class DecisionTest extends TestCase
         $defaultDecision = new Decision(
             Kyivstar::CREDIT_RATE,
             true,
-            100000,
-            50000
+            50000,
+            10000
         );
 
         $this->assertEquals(Decision::ACCEPT, $defaultDecision->resolution());

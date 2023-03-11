@@ -32,11 +32,12 @@ class CreditRateLimitCore implements DomainServiceContract
     // Розрахувати limitItog (кредитний ліміт, який ми можемо надати) по формулі:
     public function resolveCreditRateLimitDecision(ClientRequest $clientRequest): ClientRequest
     {
+        $decision = ($this->newDecision($clientRequest));
         return new ClientRequest(
             $clientRequest->getUuid(),
             $this->exchangeClientSalaryToUAH($clientRequest->getClientEntity()),
-            $clientRequest->getRequestedCreditLimit(),
-            ($this->newDecision($clientRequest))->resolution()
+            $decision->getRequestedLimit(),
+            $decision->resolution()
         );
     }
 
