@@ -2,7 +2,7 @@
 
 namespace Tests\Domain;
 
-use Rater\Domain\ValueObjects\CellPhoneNumber;
+use xCom\CreditRateLimitService\ValueObjects\CellPhoneNumber;
 use Tests\TestCase;
 
 class CellPhoneTest extends TestCase

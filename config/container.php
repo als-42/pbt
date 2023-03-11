@@ -1,14 +1,14 @@
 <?php declare(strict_types=1);
 
+use xCom\CreditRateLimitService\CreditRateLimitCore;
+use xCom\CreditRateLimitService\Factories\LoggerFactory;
+use xCom\CreditRateLimitService\HttpRequestHandler;
+use xCom\CreditRateLimitService\Infrastructure\Persistence\ClientsRequestsStoreCommandsHandler;
+use xCom\CreditRateLimitService\Infrastructure\Persistence\ClientsStoreCommandsHandler;
+use xCom\CreditRateLimitService\Infrastructure\Persistence\ClientsStoreQueriesHandler;
+use xCom\CreditRateLimitService\Infrastructure\PgConnector;
+use xCom\CreditRateLimitService\Repository\ClientRequestRepository;
 use Psr\Log\LoggerInterface;
-use Rater\Endpoints\CreditRateLimit\LimitUpdateRequestHandler;
-use Rater\Factories\LoggerFactory;
-use Rater\Infrastructure\Persistence\ClientsRequestsStoreCommandsHandler;
-use Rater\Infrastructure\Persistence\ClientsStoreCommandsHandler;
-use Rater\Infrastructure\Persistence\ClientsStoreQueriesHandler;
-use Rater\Infrastructure\Services\ClientRequestRepository;
-use Rater\Services\PgConnector;
-use Rater\Services\CreditRateLimitService;
 use function DI\autowire;
 use function DI\create;
 use function DI\factory;
@@ -33,9 +33,9 @@ return [
     LoggerInterface::class => factory([new LoggerFactory, 'createLogger'])
         ->parameter('logsPath', get('app.logsPath')),
 
-    LimitUpdateRequestHandler::class => create()->constructor(
+    HttpRequestHandler::class => create()->constructor(
         get(LoggerInterface::class),
-        get(CreditRateLimitService::class),
+        get(CreditRateLimitCore::class),
         get(ClientRequestRepository::class)
     ),
 

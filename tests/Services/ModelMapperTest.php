@@ -4,9 +4,9 @@ namespace Tests\Services;
 
 use Faker;
 use Faker\Provider\Uuid;
-use Rater\Domain\Models\ClientRequest;
-use Rater\Services\ModelMapper;
 use Tests\TestCase;
+use xCom\CreditRateLimitService\Domain\Models\ClientRequest;
+use xCom\Libraries\ModelMapper;
 
 class ModelMapperTest extends TestCase
 {
