@@ -46,9 +46,6 @@ class DecisionTest extends TestCase
             50000
         );
 
-        // about fail
-        #   throw new \DomainException("BAD TASK REQUIREMENTS, CALL TO ANALYTICS");
-
         $this->assertEquals(Decision::ACCEPT, $defaultDecision->resolution());
     }
 }
