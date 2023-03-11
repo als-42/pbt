@@ -7,13 +7,9 @@ any commentaries and questions very welcome...
 
 
 
-topic about flat structure vs micro-apps/services
+topic about flat structure vs micro-apps/services - is away out of test task
 
-is away out of test task
-
-and this test in many point not finished,
-it is possible get done with few months on real project
-then a lot of questions will be closed
+and this test in many points is not finished, possible get done with few months on real project, 
 
 run a.sh
 ```json
