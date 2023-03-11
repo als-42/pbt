@@ -1,14 +1,14 @@
 <?php declare(strict_types=1);
 
-use xCom\CreditRateLimitService\CreditRateLimitCore;
-use xCom\CreditRateLimitService\Factories\LoggerFactory;
-use xCom\CreditRateLimitService\HttpRequestHandler;
-use xCom\CreditRateLimitService\Infrastructure\Persistence\ClientsRequestsStoreCommandsHandler;
-use xCom\CreditRateLimitService\Infrastructure\Persistence\ClientsStoreCommandsHandler;
-use xCom\CreditRateLimitService\Infrastructure\Persistence\ClientsStoreQueriesHandler;
-use xCom\CreditRateLimitService\Infrastructure\PgConnector;
-use xCom\CreditRateLimitService\Repository\ClientRequestRepository;
 use Psr\Log\LoggerInterface;
+use XCom\CreditRateLimitService\CreditRateLimitCore;
+use XCom\CreditRateLimitService\Factories\LoggerFactory;
+use XCom\CreditRateLimitService\HttpRequestHandler;
+use XCom\CreditRateLimitService\Infrastructure\Persistence\ClientsRequestsStoreCommandsHandler;
+use XCom\CreditRateLimitService\Infrastructure\Persistence\ClientsStoreCommandsHandler;
+use XCom\CreditRateLimitService\Infrastructure\Persistence\ClientsStoreQueriesHandler;
+use XCom\CreditRateLimitService\Infrastructure\PgConnector;
+use XCom\CreditRateLimitService\Repository\ClientRequestRepository;
 use function DI\autowire;
 use function DI\create;
 use function DI\factory;

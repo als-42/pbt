@@ -2,8 +2,8 @@
 
 namespace Tests\Domain;
 
-use xCom\CreditRateLimitService\ValueObjects\CellPhoneNumber;
 use Tests\TestCase;
+use XCom\CreditRateLimitService\ValueObjects\CellPhoneNumber;
 
 class CellPhoneTest extends TestCase
 {
@@ -13,11 +13,6 @@ class CellPhoneTest extends TestCase
         parent::setUp();
     }
 
-    public function testClassAssetExceptions()
-    {
-
-        $this->assertEquals(1, 1);
-    }
 
     public function testValidAsset()
     {

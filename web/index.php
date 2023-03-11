@@ -4,7 +4,6 @@ ini_set('error_reporting', (string)E_ALL);
 
 include './../vendor/autoload.php';
 
-use xCom\CreditRateLimitService\HttpRequestHandler;
 use DI\ContainerBuilder;
 use DI\DependencyException;
 use DI\NotFoundException;
@@ -16,6 +15,7 @@ use Laminas\HttpHandlerRunner\RequestHandlerRunner;
 use Laminas\Stratigility\Middleware\ErrorHandler;
 use Laminas\Stratigility\Middleware\RequestHandlerMiddleware;
 use Laminas\Stratigility\MiddlewarePipe;
+use XCom\CreditRateLimitService\HttpRequestHandler;
 use function Laminas\Stratigility\middleware;
 use function Laminas\Stratigility\path;
 

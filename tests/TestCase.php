@@ -30,6 +30,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
             $this->logger = $this->container->get(LoggerInterface::class);
 
         } catch (NotFoundExceptionInterface|ContainerExceptionInterface|Exception $e) {
+            $this->logger->critical($e->getMessage());
             exit('container build failure: '. $e->getMessage());
         }
     }

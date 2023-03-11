@@ -5,8 +5,8 @@ any commentaries and questions very welcome...
 
 ## app struct: 
 - topic about flat structure vs micro-apps/services - is away out of test task
-- now sources has next design "xCom\\": "src/xCom" we have global company space - xCom
-- this test task is like a microservice - and I'm put it into  src/xCom/my-service-name
+- now sources has next design "XCom\\": "src/" we have global company space - xCom
+- this test task is like a microservice - and I'm put it into  src/my-service-name
 - also has two folder that extends xcom layer: contracts and libraries -> but maybe need it into independent packages
 
 ### remark:
