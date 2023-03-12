@@ -34,3 +34,25 @@ run b.sh
 ```
 
 other notes you can find in source...
+
+# Changelog
+
+_0.0.1 version of service_
+
+- w.o. retrospective in production use
+- w.o. ability to tests and mock
+- just an example for how im think and how can solve this test case
+- last update move from domain service to app level because: (has deps - currency exchange service, and app logic data flow behaviours)
+
+_ver: 0.0.2:_
+
+- move persistence duties to ClientRequestRepository
+- add ability for testing the resolveCreditRateLimitDecision method
+- at all, for this service fixed single-responsibility
+- clean up thinks in method names
+
+_ver: 0.0.3:_
+
+- add tests for Decision class
+- fixed schema, added `actual_credit_limit` column, rename `decision` -> `resolution`
+- fixed repositories

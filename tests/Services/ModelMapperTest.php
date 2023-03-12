@@ -5,7 +5,7 @@ namespace Tests\Services;
 use Faker;
 use Faker\Provider\Uuid;
 use Tests\TestCase;
-use XCom\CreditRateLimitService\Domain\Models\ClientRequest;
+use XCom\CreditRateLimitService\Domain\Models\ReviewCreditLimitRequest;
 use XCom\Libraries\ModelMapper;
 
 class ModelMapperTest extends TestCase
@@ -30,7 +30,7 @@ class ModelMapperTest extends TestCase
 
         $obj = json_decode(json_encode($payload));
 
-        $tmp = ModelMapper::Map($obj, ClientRequest::class);
+        $tmp = ModelMapper::Map($obj, ReviewCreditLimitRequest::class);
 
         $tmp;
     }

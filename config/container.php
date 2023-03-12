@@ -1,14 +1,15 @@
 <?php declare(strict_types=1);
 
 use Psr\Log\LoggerInterface;
-use XCom\CreditRateLimitService\CreditRateLimitCore;
+use XCom\CreditRateLimitService\CreditRateLimitResolutionService;
 use XCom\CreditRateLimitService\Factories\LoggerFactory;
 use XCom\CreditRateLimitService\HttpRequestHandler;
-use XCom\CreditRateLimitService\Infrastructure\Persistence\ClientsRequestsStoreCommandsHandler;
+use XCom\CreditRateLimitService\Infrastructure\Persistence\CreditLimitsHistoryStoreCommandsHandler;
 use XCom\CreditRateLimitService\Infrastructure\Persistence\ClientsStoreCommandsHandler;
 use XCom\CreditRateLimitService\Infrastructure\Persistence\ClientsStoreQueriesHandler;
 use XCom\CreditRateLimitService\Infrastructure\PgConnector;
-use XCom\CreditRateLimitService\Repository\ClientRequestRepository;
+use XCom\CreditRateLimitService\Repository\ClientsRepository;
+use XCom\CreditRateLimitService\Repository\CreditLimitsHistoryRepository;
 use function DI\autowire;
 use function DI\create;
 use function DI\factory;
@@ -27,7 +28,7 @@ return [
     PgConnector::class => factory(function(){
         return (new PgConnector())->createPdo();
     }),
-    ClientsRequestsStoreCommandsHandler::class => autowire(),
+    CreditLimitsHistoryStoreCommandsHandler::class => autowire(),
     ClientsStoreCommandsHandler::class => autowire(),
     ClientsStoreQueriesHandler::class => autowire(),
     LoggerInterface::class => factory([new LoggerFactory, 'createLogger'])
@@ -35,8 +36,9 @@ return [
 
     HttpRequestHandler::class => create()->constructor(
         get(LoggerInterface::class),
-        get(CreditRateLimitCore::class),
-        get(ClientRequestRepository::class)
+        get(CreditRateLimitResolutionService::class),
+        get(CreditLimitsHistoryRepository::class),
+        get(ClientsRepository::class),
     ),
 
 ];

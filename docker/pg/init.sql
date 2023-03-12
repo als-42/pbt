@@ -1,11 +1,12 @@
 
 create table if not exists clients
 (
-    id int constraint _clients_id_index primary key, /*double index*/
+    id int constraint _clients_id_index primary key,
+    /* composite index, phone, salary? */
     firstname varchar(45) null ,
     lastname varchar(45) null ,
     birthday date not null ,
-    phone varchar(45) null ,
+    phone varchar(45) not null ,
     mail varchar(45) null ,
     address varchar(45) null ,
     salary numeric(15,2) null ,
@@ -25,13 +26,14 @@ create table if not exists client_salary
 );
 */
 
-create table if not exists requested_credit_limits_history
+create table if not exists credit_limits_history
 (
     id serial primary key,
     _ref uuid constraint _requested_ref_index default gen_random_uuid(),
     client_id int not null references clients(id),
     requested_credit_limit numeric(15,2) not null,
-    decision bool not null
+    actual_credit_limit numeric(15,2) not null,
+    resolution bool not null
 );
 
 /*

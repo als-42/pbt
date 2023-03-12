@@ -20,12 +20,24 @@ class DecisionTest extends TestCase
         $this->assertEquals(Decision::DECLINE, $defaultDecision->resolution());
     }
 
-    public function testAdultTrueAndLowSalary()
+    public function testAdultTrueAndZeroSalary()
     {
         $defaultDecision = new Decision(
             Kyivstar::CREDIT_RATE,
             true,
-            10000,
+            0,
+            50000
+        );
+
+        $this->assertEquals(Decision::DECLINE, $defaultDecision->resolution());
+    }
+
+    public function testAdultTrueAndMinimalSalary()
+    {
+        $defaultDecision = new Decision(
+            Kyivstar::CREDIT_RATE,
+            true,
+            10,
             50000
         );
 

@@ -8,26 +8,23 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
-use XCom\CreditRateLimitService\Domain\Models\ClientRequest;
+use XCom\CreditRateLimitService\Domain\Models\ReviewCreditLimitRequest;
 use XCom\CreditRateLimitService\Infrastructure\JsonResponse;
-use XCom\CreditRateLimitService\Repository\ClientRequestRepository;
+use XCom\CreditRateLimitService\Repository\ClientsRepository;
+use XCom\CreditRateLimitService\Repository\CreditLimitsHistoryRepository;
 use XCom\Libraries\ModelMapper;
 
 final class HttpRequestHandler
     implements RequestHandlerInterface
 {
-    private LoggerInterface $logger;
-    private CreditRateLimitCore $creditRateLimitCore;
-    private ClientRequestRepository $clientRequestRepository;
     private const POST = 'POST';
+
     public function __construct(
-        LoggerInterface         $logger,
-        CreditRateLimitCore     $service,
-        ClientRequestRepository $clientRequestRepository,
+        private readonly LoggerInterface                  $logger,
+        private readonly CreditRateLimitResolutionService $creditRateLimitResolutionService,
+        private readonly CreditLimitsHistoryRepository    $creditLimitsRepository,
+        private readonly ClientsRepository                $clientsRepository,
     ) {
-        $this->logger = $logger;
-        $this->creditRateLimitCore = $service;
-        $this->clientRequestRepository = $clientRequestRepository;
     }
 
     /**
@@ -61,10 +58,11 @@ final class HttpRequestHandler
 
             // hacks for week modelMapper
             $requestBody->uuid = Uuid::uuid();
-            $requestBody->decision = false;
+            $requestBody->actualCreditLimit = 0;
+            $requestBody->resolution = false;
 
-            /** @var ClientRequest $requestModel */
-            $requestModel = ModelMapper::Map($requestBody, ClientRequest::class);
+            /** @var ReviewCreditLimitRequest $requestModel */
+            $requestModel = ModelMapper::Map($requestBody, ReviewCreditLimitRequest::class);
 
             // Реалізувати валідацію вхідних даних на відповідність заданим типам даних,
             // та перевірити наявність обов’язкових полів.
@@ -79,9 +77,11 @@ final class HttpRequestHandler
                 return new JsonResponse($requestModel->getErrors(), JsonResponse::UNPROCESSABLE_CONTENT);
             }
 
-            $this->clientRequestRepository->persist(
-                $this->creditRateLimitCore
-                    ->resolveCreditRateLimitDecision($requestModel)
+            $this->clientsRepository->persist($requestModel->getClientEntity());
+
+            $this->creditLimitsRepository->persist(
+                $this->creditRateLimitResolutionService
+                    ->resolveNewCreditRateLimit($requestModel)
             );
 
             // Якщо перевірка пройдена успішно,

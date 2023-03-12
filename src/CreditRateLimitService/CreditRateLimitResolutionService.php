@@ -5,53 +5,39 @@ namespace XCom\CreditRateLimitService;
 use XCom\Contracts\DomainServiceContract;
 use XCom\CreditRateLimitService\Domain\Decision;
 use XCom\CreditRateLimitService\Domain\Models\Client;
-use XCom\CreditRateLimitService\Domain\Models\ClientRequest;
+use XCom\CreditRateLimitService\Domain\Models\ReviewCreditLimitRequest;
 use XCom\CreditRateLimitService\Infrastructure\CurrencyExchangeService;
 use XCom\CreditRateLimitService\ValueObjects\CellPhoneNumber;
 use XCom\CreditRateLimitService\ValueObjects\Currency;
 
-class CreditRateLimitCore implements DomainServiceContract
+class CreditRateLimitResolutionService implements DomainServiceContract
 {
 
     public function __construct(
         private readonly CurrencyExchangeService $currencyExchangeService,
     ) {
-        // it is first version of service
-        // w.o. retrospective in production use
-        // w.o. ability to tests and mock
-        // just an example for how im think and how can solve this test case
-        // ps: last update move from domain service to app level because:
-        // (has deps - currency exchange service, and app logic data flow behaviours)
-        // ver: 0.0.2:
-        // - move persistence duties to ClientRequestRepository
-        // - add ability for testing the resolveCreditRateLimitDecision method
-        // - at all for this service fixed single-responsibility
-        // - clean up thinks in method names
     }
 
     // Розрахувати limitItog (кредитний ліміт, який ми можемо надати) по формулі:
-    public function resolveCreditRateLimitDecision(ClientRequest $clientRequest): ClientRequest
-    {
-        $decision = ($this->newDecision($clientRequest));
-        return new ClientRequest(
-            $clientRequest->getUuid(),
-            $this->exchangeClientSalaryToUAH($clientRequest->getClientEntity()),
-            $decision->getRequestedLimit(),
-            $decision->resolution()
-        );
-    }
-
-    private function newDecision(ClientRequest $clientRequest): Decision
+    public function resolveNewCreditRateLimit(ReviewCreditLimitRequest $clientRequest): ReviewCreditLimitRequest
     {
         $cellPhone = (new CellPhoneNumber(
             $clientRequest->getClientEntity()->getPhone()
         ));
 
-        return new Decision(
+        $decision = new Decision(
             ($cellPhone->getMobileOperator())->getRate(),
             $clientRequest->getClientEntity()->isAdult(),
             $clientRequest->getClientEntity()->getSalary(),
             $clientRequest->getRequestedCreditLimit()
+        );
+
+        return new ReviewCreditLimitRequest(
+            $clientRequest->getUuid(),
+            $this->exchangeClientSalaryToUAH($clientRequest->getClientEntity()),
+            $clientRequest->getRequestedCreditLimit(),
+            $decision->getActualCreditLimit(),
+            $decision->resolution()
         );
     }
 
