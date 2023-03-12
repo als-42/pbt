@@ -77,7 +77,7 @@ final class HttpRequestHandler
                 return new JsonResponse($requestModel->getErrors(), JsonResponse::UNPROCESSABLE_CONTENT);
             }
 
-            $this->clientsRepository->persist($requestModel->getClientEntity());
+            $this->clientsRepository->persist($requestModel->getClient());
 
             $this->creditLimitsRepository->persist(
                 $this->creditRateLimitResolutionService

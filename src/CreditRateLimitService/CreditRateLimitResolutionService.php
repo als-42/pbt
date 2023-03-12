@@ -22,22 +22,22 @@ class CreditRateLimitResolutionService implements DomainServiceContract
     public function resolveNewCreditRateLimit(ReviewCreditLimitRequest $clientRequest): ReviewCreditLimitRequest
     {
         $cellPhone = (new CellPhoneNumber(
-            $clientRequest->getClientEntity()->getPhone()
+            $clientRequest->getClient()->getPhone()
         ));
 
         $decision = new Decision(
             ($cellPhone->getMobileOperator())->getRate(),
-            $clientRequest->getClientEntity()->isAdult(),
-            $clientRequest->getClientEntity()->getSalary(),
+            $clientRequest->getClient()->isAdult(),
+            $clientRequest->getClient()->getSalary(),
             $clientRequest->getRequestedCreditLimit()
         );
 
         return new ReviewCreditLimitRequest(
             $clientRequest->getUuid(),
-            $this->exchangeClientSalaryToUAH($clientRequest->getClientEntity()),
+            $this->exchangeClientSalaryToUAH($clientRequest->getClient()),
             $clientRequest->getRequestedCreditLimit(),
             $decision->getActualCreditLimit(),
-            $decision->resolution()
+            $decision->getResolution()
         );
     }
 

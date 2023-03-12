@@ -17,7 +17,7 @@ class DecisionTest extends TestCase
             50000
         );
 
-        $this->assertEquals(Decision::DECLINE, $defaultDecision->resolution());
+        $this->assertEquals(Decision::DECLINE, $defaultDecision->getResolution());
     }
 
     public function testAdultTrueAndZeroSalary()
@@ -29,7 +29,7 @@ class DecisionTest extends TestCase
             50000
         );
 
-        $this->assertEquals(Decision::DECLINE, $defaultDecision->resolution());
+        $this->assertEquals(Decision::DECLINE, $defaultDecision->getResolution());
     }
 
     public function testAdultTrueAndMinimalSalary()
@@ -41,7 +41,7 @@ class DecisionTest extends TestCase
             50000
         );
 
-        $this->assertEquals(Decision::DECLINE, $defaultDecision->resolution());
+        $this->assertEquals(Decision::DECLINE, $defaultDecision->getResolution());
     }
 
     public function testAdultTrueAndHighSalary()
@@ -53,6 +53,6 @@ class DecisionTest extends TestCase
             10000
         );
 
-        $this->assertEquals(Decision::ACCEPT, $defaultDecision->resolution());
+        $this->assertEquals(Decision::ACCEPT, $defaultDecision->getResolution());
     }
 }

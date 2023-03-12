@@ -84,7 +84,7 @@ class Decision implements DomainServiceContract
         return $this->actualCreditLimit;
     }
 
-    public function resolution(): bool
+    public function getResolution(): bool
     {
         return $this->resolution;
     }

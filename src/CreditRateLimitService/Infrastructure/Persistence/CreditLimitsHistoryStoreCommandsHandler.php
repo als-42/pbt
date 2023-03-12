@@ -30,7 +30,7 @@ class CreditLimitsHistoryStoreCommandsHandler
         $stmt = $conn->prepare($sql);
 
         $stmt->bindValue(':_ref', $modelContract->getUuid()->getValue());
-        $stmt->bindValue(':client_id', $modelContract->getClientEntity()->getClientId(), \PDO::PARAM_INT);
+        $stmt->bindValue(':client_id', $modelContract->getClient()->getClientId(), \PDO::PARAM_INT);
         $stmt->bindValue(':requested_credit_limit', $modelContract->getRequestedCreditLimit() /*float?*/);
         $stmt->bindValue(':actual_credit_limit', $modelContract->getActualCreditLimit() /*float?*/);
         $stmt->bindValue(':resolution', $modelContract->isPositiveResolution(), \PDO::PARAM_BOOL);

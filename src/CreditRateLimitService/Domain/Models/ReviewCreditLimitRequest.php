@@ -12,18 +12,26 @@ use XCom\Libraries\ValidModel\ValidModel;
 #[ValidModel]
 # https://www.php.net/manual/en/filter.examples.validation.php
 # https://www.php.net/manual/en/filter.examples.sanitization.php
-class ReviewCreditLimitRequest
+class ReviewCreditLimitRequest // it is aggregate or model????
+    // used as aggregate, but actually is a model!
     implements ValidatableContract, DomainModelContract
 {
     /** not have implementation, just showcase  */
     use ValidatableTrait;
 
+    /**
+     * todo: add Value Object will be better
+     *
+     * VO allow delegate validation to independent classes
+     * because domain model looks like a data validation controller
+     */
     public function __construct(
-        #[Required]            /** not impl, just showcase  */
+        #[Required]
         private readonly Uuid $uuid,
 
-        #[ValidModel]          // also it #[Required] ? /
-        private readonly Client $clientEntity,
+        #[ValidModel]
+        // also it #[Required] ? /
+        private readonly Client $client, /** NOT see any reason for embed client here */
 
         #[Required]
         private readonly float $requestedCreditLimit,
@@ -36,9 +44,9 @@ class ReviewCreditLimitRequest
         return $this->uuid;
     }
 
-    public function getClientEntity(): Client
+    public function getClient(): Client
     {
-        return $this->clientEntity;
+        return $this->client;
     }
 
     public function getRequestedCreditLimit(): float
