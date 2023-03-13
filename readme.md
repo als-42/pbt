@@ -56,3 +56,7 @@ _ver: 0.0.3:_
 - add tests for Decision class
 - fixed schema, added `actual_credit_limit` column, rename `decision` -> `resolution`
 - fixed repositories
+
+_ver: 0.0.4:_
+
+- cleanup interfaces
