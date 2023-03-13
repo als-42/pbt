@@ -82,6 +82,13 @@ final class HttpRequestHandler
 
             $this->clientsRepository->persist($requestModel->getClient());
 
+            // function persist() -> command contract impl
+            // function resolveNewCreditRateLimit() -> command contract impl
+
+            // refactor to scalable (clonable) solution with useful patterns:
+            // command, strategy and unitOfWork
+            // ---> require additional 1-2 maybe 3 weeks
+
             $this->creditLimitsHistoryRepository->persist(
                 $this->creditRateLimitResolutionService
                     ->resolveNewCreditRateLimit($requestModel)

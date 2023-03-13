@@ -3,6 +3,7 @@
 namespace XCom\CreditRateLimitService;
 
 use XCom\Contracts\ApplicationServiceContract;
+use XCom\Contracts\CommandContract;
 use XCom\CreditRateLimitService\Domain\Decision;
 use XCom\CreditRateLimitService\Domain\Models\Client;
 use XCom\CreditRateLimitService\Domain\Models\ReviewCreditLimitRequest;
@@ -17,6 +18,13 @@ class CreditRateLimitResolutionService
     public function __construct(
         private readonly CurrencyExchangeService $currencyExchangeService,
     ) {
+    }
+
+    public function handleCommand(CommandContract $command): int
+    {
+        // TODO: Implement handleCommand() method.
+        // function resolveNewCreditRateLimit() -> command contract impl
+        return 0;
     }
 
     // Розрахувати limitItog (кредитний ліміт, який ми можемо надати) по формулі:
