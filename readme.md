@@ -60,3 +60,4 @@ _ver: 0.0.3:_
 _ver: 0.0.4:_
 
 - cleanup interfaces
+- add notes about command, strategy, unit of work patterns
