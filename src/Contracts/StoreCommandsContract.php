@@ -2,7 +2,7 @@
 
 namespace XCom\Contracts;
 
-interface StoreCommandsHandlerContract extends RepositoryContract
+interface StoreCommandsContract
 {
 
     // todo add extend interface for concrete repository, when project will be bigger

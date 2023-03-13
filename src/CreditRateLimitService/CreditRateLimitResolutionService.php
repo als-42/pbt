@@ -2,7 +2,7 @@
 
 namespace XCom\CreditRateLimitService;
 
-use XCom\Contracts\DomainServiceContract;
+use XCom\Contracts\ApplicationServiceContract;
 use XCom\CreditRateLimitService\Domain\Decision;
 use XCom\CreditRateLimitService\Domain\Models\Client;
 use XCom\CreditRateLimitService\Domain\Models\ReviewCreditLimitRequest;
@@ -10,7 +10,8 @@ use XCom\CreditRateLimitService\Infrastructure\CurrencyExchangeService;
 use XCom\CreditRateLimitService\ValueObjects\CellPhoneNumber;
 use XCom\CreditRateLimitService\ValueObjects\Currency;
 
-class CreditRateLimitResolutionService implements DomainServiceContract
+class CreditRateLimitResolutionService
+    implements ApplicationServiceContract /* ?? */
 {
 
     public function __construct(

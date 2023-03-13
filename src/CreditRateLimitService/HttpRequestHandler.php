@@ -8,10 +8,9 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
+use XCom\Contracts\ApplicationServiceContract;
 use XCom\CreditRateLimitService\Domain\Models\ReviewCreditLimitRequest;
 use XCom\CreditRateLimitService\Infrastructure\JsonResponse;
-use XCom\CreditRateLimitService\Repository\ClientsRepository;
-use XCom\CreditRateLimitService\Repository\CreditLimitsHistoryRepository;
 use XCom\Libraries\ModelMapper;
 
 final class HttpRequestHandler
@@ -20,11 +19,15 @@ final class HttpRequestHandler
     private const POST = 'POST';
 
     public function __construct(
-        private readonly LoggerInterface                  $logger,
-        private readonly CreditRateLimitResolutionService $creditRateLimitResolutionService,
-        private readonly CreditLimitsHistoryRepository    $creditLimitsRepository,
-        private readonly ClientsRepository                $clientsRepository,
-    ) {
+        private readonly LoggerInterface                       $logger,
+        /** need more correct using contracts*/
+        /** also im few times inject classes directly, when polymorphism not need */
+        /** in this handler maybe in future can be useful different repos */
+        private readonly ApplicationServiceContract            $creditRateLimitResolutionService,
+        private readonly CreditLimitsHistoryRepositoryContract $creditLimitsHistoryRepository,
+        private readonly ClientsRepositoryContract             $clientsRepository,
+    )
+    {
     }
 
     /**
@@ -35,10 +38,10 @@ final class HttpRequestHandler
         try {
             // full endpoint can be with switch over http method verbs
             assert($request->getMethod() == self::POST,
-                new Exception('only POST request', JsonResponse::BAD_REQUEST) );
+                new Exception('only POST request', JsonResponse::BAD_REQUEST));
             // some trait for share over endpoints
             assert($this->isJsonContentType($request),
-                new Exception('await json', JsonResponse::BAD_REQUEST) );
+                new Exception('await json', JsonResponse::BAD_REQUEST));
 
             // Вхідні параметри (тип запиту post, формат даних json ):
             // clientId -- ідентифікатор клієнта (обов’язкове поле, number)
@@ -79,7 +82,7 @@ final class HttpRequestHandler
 
             $this->clientsRepository->persist($requestModel->getClient());
 
-            $this->creditLimitsRepository->persist(
+            $this->creditLimitsHistoryRepository->persist(
                 $this->creditRateLimitResolutionService
                     ->resolveNewCreditRateLimit($requestModel)
             );
@@ -105,6 +108,18 @@ final class HttpRequestHandler
         }
     }
 
+    private function isJsonContentType(ServerRequestInterface $request): bool
+    {
+        // todo better check for json?
+        $contentType = $request->getHeader('content-type');
+
+        if (count($contentType)) {
+            if (in_array('application/json', $contentType)) return true;
+        }
+
+        return false;
+    }
+
     /**
      * @throws Exception
      */
@@ -114,18 +129,6 @@ final class HttpRequestHandler
         if (is_object($requestBody)) return $requestBody;
         // 7.3.0	JSON_THROW_ON_ERROR flags was added.
         return null;
-    }
-
-    private function isJsonContentType(ServerRequestInterface $request): bool
-    {
-        // todo better check for json?
-        $contentType = $request->getHeader('content-type');
-
-        if (count($contentType)){
-            if (in_array('application/json', $contentType)) return true;
-        }
-
-        return false;
     }
 
 }

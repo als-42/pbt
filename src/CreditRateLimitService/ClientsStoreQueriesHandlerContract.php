@@ -1,6 +1,6 @@
 <?php
 
-namespace XCom\CreditRateLimitService\Repository;
+namespace XCom\CreditRateLimitService;
 
 use XCom\Contracts\DomainModelContract;
 

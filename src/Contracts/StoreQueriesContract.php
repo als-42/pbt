@@ -2,7 +2,7 @@
 
 namespace XCom\Contracts;
 
-interface StoreQueriesHandlerContract extends RepositoryContract
+interface StoreQueriesContract
 {
     public function getById(int $id): ?DomainModelContract;
 }

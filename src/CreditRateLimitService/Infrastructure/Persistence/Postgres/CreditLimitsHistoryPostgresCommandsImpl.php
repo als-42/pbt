@@ -1,14 +1,14 @@
 <?php
 
-namespace XCom\CreditRateLimitService\Infrastructure\Persistence;
+namespace XCom\CreditRateLimitService\Infrastructure\Persistence\Postgres;
 
 use XCom\Contracts\DomainModelContract;
+use XCom\CreditRateLimitService\CreditLimitHistoryStoreCommandsContract;
 use XCom\CreditRateLimitService\Domain\Models\ReviewCreditLimitRequest;
 use XCom\CreditRateLimitService\Infrastructure\PgConnector;
-use XCom\CreditRateLimitService\Repository\CreditLimitHistoryStoreCommandsHandlerContract;
 
-class CreditLimitsHistoryStoreCommandsHandler
-    implements CreditLimitHistoryStoreCommandsHandlerContract
+class CreditLimitsHistoryPostgresCommandsImpl
+    implements CreditLimitHistoryStoreCommandsContract
 {
 
 

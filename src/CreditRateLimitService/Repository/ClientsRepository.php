@@ -2,22 +2,21 @@
 
 namespace XCom\CreditRateLimitService\Repository;
 
-use XCom\Contracts\RepositoryContract;
+use XCom\CreditRateLimitService\ClientsRepositoryContract;
 use XCom\CreditRateLimitService\Domain\Models\Client;
-use XCom\CreditRateLimitService\Infrastructure\Persistence\ClientsStoreCommandsHandler;
-use XCom\CreditRateLimitService\Infrastructure\Persistence\ClientsStoreQueriesHandler;
+use XCom\CreditRateLimitService\Infrastructure\Persistence\Postgres\ClientsPostgresCommandsImpl;
+use XCom\CreditRateLimitService\Infrastructure\Persistence\Postgres\ClientsPostgresQueriesImplOrHandler;
 
 /**
  * name collision - repository vs store,
  * repository is like a pattern for different store solutions, mechanisms
  */
 class ClientsRepository
-    implements RepositoryContract
-    /* useless interface, yet like other contracts */
+    implements ClientsRepositoryContract
 {
     public function __construct(
-        private readonly ClientsStoreQueriesHandler  $clientsStoreQueryHandler,
-        private readonly ClientsStoreCommandsHandler $clientsStoreCommandsHandler,
+        private readonly ClientsPostgresQueriesImplOrHandler $clientsStoreQueryHandler,
+        private readonly ClientsPostgresCommandsImpl         $clientsStoreCommandsHandler,
     )
     {
     }

@@ -1,13 +1,13 @@
 <?php
 
-namespace XCom\CreditRateLimitService\Infrastructure\Persistence;
+namespace XCom\CreditRateLimitService\Infrastructure\Persistence\Postgres;
 
-use XCom\Contracts\StoreQueriesHandlerContract;
+use XCom\Contracts\StoreQueriesContract;
 use XCom\CreditRateLimitService\Domain\Models\Client;
 use XCom\CreditRateLimitService\Infrastructure\PgConnector;
 use XCom\Libraries\ModelMapper;
 
-class ClientsStoreQueriesHandler implements StoreQueriesHandlerContract
+class ClientsPostgresQueriesImplOrHandler implements StoreQueriesContract
 {
     public function __construct(
         private readonly PgConnector $pgConnector,

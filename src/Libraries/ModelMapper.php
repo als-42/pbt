@@ -145,7 +145,9 @@ class ModelMapper
                     $param->instance = null;
                     $param->type = 'class';
                 } else {
-                    $param->type = $parameter->getType()->getName();
+                    if ($parameter->getType() == \ReflectionNamedType::class) {
+                        $param->type = $parameter->getType()->getName();
+                    }
                 }
 
                 /* not working */

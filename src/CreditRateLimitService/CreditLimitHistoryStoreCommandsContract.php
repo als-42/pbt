@@ -1,13 +1,13 @@
 <?php
 
-namespace XCom\CreditRateLimitService\Repository;
+namespace XCom\CreditRateLimitService;
 
 use XCom\Contracts\DomainModelContract;
-use XCom\Contracts\StoreCommandsHandlerContract;
+use XCom\Contracts\StoreCommandsContract;
 use XCom\CreditRateLimitService\Domain\Models\ReviewCreditLimitRequest;
 
-interface CreditLimitHistoryStoreCommandsHandlerContract
-    extends StoreCommandsHandlerContract
+interface CreditLimitHistoryStoreCommandsContract
+    extends StoreCommandsContract
 {
 
     // todo add extend interface for concrete repository, when project will be bigger

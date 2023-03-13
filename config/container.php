@@ -1,12 +1,17 @@
 <?php declare(strict_types=1);
 
 use Psr\Log\LoggerInterface;
+use XCom\CreditRateLimitService\ClientsRepositoryContract;
+use XCom\CreditRateLimitService\ClientsStoreCommandsContract;
+use XCom\CreditRateLimitService\ClientsStoreQueriesHandlerContract;
+use XCom\CreditRateLimitService\CreditLimitHistoryStoreCommandsContract;
+use XCom\CreditRateLimitService\CreditLimitsHistoryRepositoryContract;
 use XCom\CreditRateLimitService\CreditRateLimitResolutionService;
 use XCom\CreditRateLimitService\Factories\LoggerFactory;
 use XCom\CreditRateLimitService\HttpRequestHandler;
-use XCom\CreditRateLimitService\Infrastructure\Persistence\CreditLimitsHistoryStoreCommandsHandler;
-use XCom\CreditRateLimitService\Infrastructure\Persistence\ClientsStoreCommandsHandler;
-use XCom\CreditRateLimitService\Infrastructure\Persistence\ClientsStoreQueriesHandler;
+use XCom\CreditRateLimitService\Infrastructure\Persistence\Postgres\ClientsPostgresCommandsImpl;
+use XCom\CreditRateLimitService\Infrastructure\Persistence\Postgres\ClientsPostgresQueriesImplOrHandler;
+use XCom\CreditRateLimitService\Infrastructure\Persistence\Postgres\CreditLimitsHistoryPostgresCommandsImpl;
 use XCom\CreditRateLimitService\Infrastructure\PgConnector;
 use XCom\CreditRateLimitService\Repository\ClientsRepository;
 use XCom\CreditRateLimitService\Repository\CreditLimitsHistoryRepository;
@@ -28,9 +33,15 @@ return [
     PgConnector::class => factory(function(){
         return (new PgConnector())->createPdo();
     }),
-    CreditLimitsHistoryStoreCommandsHandler::class => autowire(),
-    ClientsStoreCommandsHandler::class => autowire(),
-    ClientsStoreQueriesHandler::class => autowire(),
+
+    // not necessary
+    ClientsRepositoryContract::class => autowire(ClientsRepository::class),
+    CreditLimitsHistoryRepositoryContract::class => autowire(CreditLimitsHistoryRepository::class),
+
+    CreditLimitHistoryStoreCommandsContract::class => autowire(CreditLimitsHistoryPostgresCommandsImpl::class),
+    ClientsStoreCommandsContract::class => autowire(ClientsPostgresCommandsImpl::class),
+    ClientsStoreQueriesHandlerContract::class => autowire(ClientsPostgresQueriesImplOrHandler::class),
+
     LoggerInterface::class => factory([new LoggerFactory, 'createLogger'])
         ->parameter('logsPath', get('app.logsPath')),
 
